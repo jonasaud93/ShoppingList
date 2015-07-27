@@ -32,6 +32,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         contentValues.put(COL2, item);
         db.insert(TABLE_NAME, null, contentValues);
         //https://www.youtube.com/results?search_query=android+botngets voor het vervolg, kijken op 7:15
-
+        return true;
     }
 }
