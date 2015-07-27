@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">ShoppingList</string>
+    <string name="addItemHint">New shopping item</string>
+    <string name="addItemContentDescription">New shopping list item</string>
+    <string name="action_settings">Action settings</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
