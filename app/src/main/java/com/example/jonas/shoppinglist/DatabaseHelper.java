@@ -2,8 +2,14 @@ package com.example.jonas.shoppinglist;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import org.apache.commons.logging.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper{
     public static String DATABASE_NAME = "shoppingItems.db";
@@ -17,7 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + TABLE_NAME + "(" + COL1 + "INTEGER PRIMARY KEY AUTOINCREMENT, " + COL2 + " TEXT)");
+        db.execSQL("create table " + TABLE_NAME + "(" + COL1 + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COL2 + " TEXT)");
     }
 
     @Override
@@ -30,8 +36,28 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL2, item);
-        db.insert(TABLE_NAME, null, contentValues);
-        //https://www.youtube.com/results?search_query=android+botngets voor het vervolg, kijken op 7:15
+        long result = db.insert(TABLE_NAME, null, contentValues);
+
+        if(result == -1)
+            return false;
+
         return true;
+    }
+
+    public ArrayList<String> getAllItems(){
+        ArrayList<String> items = new ArrayList<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("SELECT " + COL2 + " FROM " + TABLE_NAME, null);
+
+        while(cursor.moveToNext()){
+            items.add(cursor.getString(cursor.getColumnIndex(COL2)));
+        }
+        android.util.Log.i("DatabaseHelper getAll()", "received " + items.size() + " records");
+        return items;
+    }
+
+    public void clear(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_NAME);
     }
 }

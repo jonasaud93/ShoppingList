@@ -1,7 +1,10 @@
 package com.example.jonas.shoppinglist;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Fragment;
 import android.app.FragmentManager;
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -9,13 +12,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.example.jonas.shoppinglist.ButtonFragment.OnFragmentInteractionListener;
+
 import java.util.ArrayList;
 
-
-public class MainActivity extends Activity implements OnNewItemAddedListener {
+public class MainActivity extends Activity implements OnNewItemAddedListener, OnFragmentInteractionListener {
 
     private ArrayAdapter<String> aa;
     private ArrayList<String> shoppingItems;
@@ -30,10 +35,39 @@ public class MainActivity extends Activity implements OnNewItemAddedListener {
         myDb = new DatabaseHelper(this);
         //References to the fragments
         FragmentManager fm = getFragmentManager();
-        ShoppingListFragment shoppingListFragment = (ShoppingListFragment) fm.findFragmentById(R.id.shoppingListFragment);
+        final ShoppingListFragment shoppingListFragment = (ShoppingListFragment) fm.findFragmentById(R.id.shoppingListFragment);
+        final ButtonFragment buttonFragment = (ButtonFragment) fm.findFragmentById(R.id.buttonFragment);
 
+        buttonFragment.saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myDb.clear();
+                int counter = 0;
+                for(String item : shoppingItems) {
+                    myDb.insertData(item);
+                    counter++;
+                }
+
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+                alertDialog.setMessage("Saved the shopping list with " + counter + " items");
+                alertDialog.show();
+
+            }
+        });
+
+        buttonFragment.clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myDb.clear();
+                aa = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, new ArrayList<String>());
+                shoppingListFragment.setListAdapter(aa);
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+                alertDialog.setMessage("Cleared shopping list");
+                alertDialog.show();
+            }
+        });
         //the list of shopping items
-        shoppingItems = new ArrayList<String>();
+        shoppingItems = myDb.getAllItems();
 
         //the array adapter, which binds the shopping list items array to the listview
         aa = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,shoppingItems);
@@ -68,5 +102,10 @@ public class MainActivity extends Activity implements OnNewItemAddedListener {
     public void onNewItemAdded(String newItem) {
         shoppingItems.add(newItem);
         aa.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
