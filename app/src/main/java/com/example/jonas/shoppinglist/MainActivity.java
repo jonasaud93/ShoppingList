@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.example.jonas.shoppinglist.ButtonFragment.OnFragmentInteractionListener;
+import com.example.jonas.shoppinglist.processes.ShoppingContacts;
 
 import java.util.ArrayList;
 
@@ -48,10 +49,7 @@ public class MainActivity extends Activity implements OnNewItemAddedListener, On
                     counter++;
                 }
 
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-                alertDialog.setMessage("Saved the shopping list with " + counter + " items");
-                alertDialog.show();
-
+                new ShoppingContacts(MainActivity.this).execute();
             }
         });
 
