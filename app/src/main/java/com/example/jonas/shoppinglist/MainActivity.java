@@ -17,7 +17,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.example.jonas.shoppinglist.ButtonFragment.OnFragmentInteractionListener;
+import com.example.jonas.shoppinglist.communication.MailSender;
 import com.example.jonas.shoppinglist.processes.ShoppingContacts;
+import com.example.jonas.shoppinglist.processes.ShoppingMessages;
 
 import java.util.ArrayList;
 
@@ -59,9 +61,8 @@ public class MainActivity extends Activity implements OnNewItemAddedListener, On
                 myDb.clear();
                 aa = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, new ArrayList<String>());
                 shoppingListFragment.setListAdapter(aa);
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-                alertDialog.setMessage("Cleared shopping list");
-                alertDialog.show();
+
+                new ShoppingMessages(MainActivity.this).execute();
             }
         });
         //the list of shopping items
