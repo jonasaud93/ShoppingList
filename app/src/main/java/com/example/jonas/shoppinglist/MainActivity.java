@@ -1,33 +1,32 @@
 package com.example.jonas.shoppinglist;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.net.Uri;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.KeyEvent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.jonas.shoppinglist.ButtonFragment.OnFragmentInteractionListener;
-import com.example.jonas.shoppinglist.communication.MailSender;
+import com.example.jonas.shoppinglist.communication.Mail;
+import com.example.jonas.shoppinglist.communication.MailHandler;
 import com.example.jonas.shoppinglist.processes.ShoppingContacts;
 import com.example.jonas.shoppinglist.processes.ShoppingMessages;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends Activity implements OnNewItemAddedListener, OnFragmentInteractionListener {
 
     private ArrayAdapter<String> aa;
     private ArrayList<String> shoppingItems;
     private DatabaseHelper myDb;
+
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +51,7 @@ public class MainActivity extends Activity implements OnNewItemAddedListener, On
                 }
 
                 new ShoppingContacts(MainActivity.this).execute();
+               // new MailHandler().execute();
             }
         });
 
@@ -59,10 +59,18 @@ public class MainActivity extends Activity implements OnNewItemAddedListener, On
             @Override
             public void onClick(View v) {
                 myDb.clear();
-                aa = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, new ArrayList<String>());
+                aa = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, new ArrayList<String>());
                 shoppingListFragment.setListAdapter(aa);
+                try {
+                    String cont = new ShoppingContacts(MainActivity.this).execute().get();
+                    Log.i(LOG_TAG, cont);
+                    new MailHandler().execute(cont);
+                } catch (InterruptedException e) {
+                    Log.e(LOG_TAG, "problem getting contacts: " + e);
+                } catch (ExecutionException e) {
+                    Log.e(LOG_TAG, "problem getting contacts:" + e);
+                }
 
-                new ShoppingMessages(MainActivity.this).execute();
             }
         });
         //the list of shopping items
@@ -107,4 +115,6 @@ public class MainActivity extends Activity implements OnNewItemAddedListener, On
     public void onFragmentInteraction(Uri uri) {
 
     }
+
+
 }
