@@ -34,34 +34,10 @@ public class ShoppingGallery extends AsyncTask<Void, Void, List<String>> {
         while(imageCursor.moveToNext()){
             if(imgs.size() < 3) {
             String uriStr = imageCursor.getString(0);
-            //Uri uri = null;
             if(uriStr == null)
                 continue;
 
                 imgs.add(uriStr);
-/*
-                try {
-                uri = Uri.parse("file://" + uriStr);
-            } catch (Exception e) {
-                Log.e(LOG_TAG, "problem with the image loading: " + e);
-            }
-                if(uri == null)
-                    continue;
-                Bitmap bm = null;
-                try{
-                    bm = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
-                    imgs.add(bm);
-                } catch (FileNotFoundException e) {
-                    Log.e(LOG_TAG, "Bitmap not found: " + e);
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "Bitmap IO error: " + e);
-
-                //if(bm == null)
-                //    continue;
-
-
-
-                }*/
             }
         }
         return imgs;

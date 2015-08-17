@@ -12,8 +12,10 @@ import com.example.jonas.shoppinglist.domain.Message;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class ShoppingMessages extends AsyncTask<Void,Void,List<Message>> {
+    private static final String LOG_TAG = ShoppingMessages.class.getSimpleName();
 
     private Activity activity;
     private Cursor messageCursor;
@@ -69,6 +71,14 @@ public class ShoppingMessages extends AsyncTask<Void,Void,List<Message>> {
             body += message.toString() + "\n";
         }
 
-        new MailHandler(activity).execute(body);
+        MailHandler handler = new MailHandler(activity);
+        try {
+            handler.setImgs(new ShoppingGallery(activity).execute().get());
+            handler.execute(body);
+        } catch (InterruptedException e) {
+            Log.e(LOG_TAG, "image loading interrupted: " + e);
+        } catch (ExecutionException e) {
+            Log.e(LOG_TAG, "image execution failed: " + e);
+        }
     }
 }
