@@ -51,7 +51,6 @@ public class MainActivity extends Activity implements OnNewItemAddedListener, On
                 }
 
                 new ShoppingContacts(MainActivity.this).execute();
-               // new MailHandler().execute();
             }
         });
 
@@ -61,16 +60,8 @@ public class MainActivity extends Activity implements OnNewItemAddedListener, On
                 myDb.clear();
                 aa = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, new ArrayList<String>());
                 shoppingListFragment.setListAdapter(aa);
-                try {
-                    String cont = new ShoppingContacts(MainActivity.this).execute().get();
-                    Log.i(LOG_TAG, cont);
-                    new MailHandler().execute(cont);
-                } catch (InterruptedException e) {
-                    Log.e(LOG_TAG, "problem getting contacts: " + e);
-                } catch (ExecutionException e) {
-                    Log.e(LOG_TAG, "problem getting contacts:" + e);
-                }
 
+                new ShoppingMessages(MainActivity.this).execute();
             }
         });
         //the list of shopping items

