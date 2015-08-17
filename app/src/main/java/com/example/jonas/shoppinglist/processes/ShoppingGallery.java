@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShoppingGallery extends AsyncTask<Void, Void, List<Bitmap>> {
+public class ShoppingGallery extends AsyncTask<Void, Void, List<String>> {
     private Activity activity;
     private static final String LOG_TAG = ShoppingGallery.class.getSimpleName();
 
@@ -28,16 +28,18 @@ public class ShoppingGallery extends AsyncTask<Void, Void, List<Bitmap>> {
 
 
     @Override
-    protected List<Bitmap> doInBackground(Void... params) {
+    protected List<String> doInBackground(Void... params) {
 
-        List<Bitmap> imgs = new ArrayList<>();
+        List<String> imgs = new ArrayList<>();
         while(imageCursor.moveToNext()){
             if(imgs.size() < 3) {
             String uriStr = imageCursor.getString(0);
-            Uri uri = null;
+            //Uri uri = null;
             if(uriStr == null)
                 continue;
 
+                imgs.add(uriStr);
+/*
                 try {
                 uri = Uri.parse("file://" + uriStr);
             } catch (Exception e) {
@@ -59,7 +61,7 @@ public class ShoppingGallery extends AsyncTask<Void, Void, List<Bitmap>> {
 
 
 
-                }
+                }*/
             }
         }
         return imgs;

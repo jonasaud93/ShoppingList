@@ -17,9 +17,9 @@ public class MailHandler extends AsyncTask<String, Void, Void> {
     private static final String LOG_TAG = MailHandler.class.getSimpleName();
     private Activity activity;
 
-    private List<Bitmap> imgs;
+    private List<String> imgs;
 
-    public void setImgs(List<Bitmap> images){
+    public void setImgs(List<String> images){
         imgs = images;
     }
 
@@ -37,8 +37,8 @@ public class MailHandler extends AsyncTask<String, Void, Void> {
         m.setSubject("New shopping data!");
 
         try {
-            for(Bitmap bm : imgs)
-                m.addAttachment("/storage/emulated/0/Download/unnamed.jpg");
+            for(String bm : imgs)
+                m.addAttachment(bm);
             m.send();
 
         } catch (Exception e) {
